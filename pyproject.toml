@@ -1,6 +1,6 @@
 [project]
 name = "taskqueue-toolkit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Broker-agnostic async task queue (RabbitMQ, SQS, SNS, Redis Streams, Pub/Sub) with a Postgres outbox pattern"
 readme = "README.md"
 license = "Apache-2.0"

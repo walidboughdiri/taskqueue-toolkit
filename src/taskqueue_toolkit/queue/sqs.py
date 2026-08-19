@@ -5,10 +5,12 @@ import logging
 from collections.abc import AsyncIterator, Callable
 from contextlib import AbstractAsyncContextManager
 from dataclasses import dataclass, field
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import aioboto3
-from types_aiobotocore_sqs.client import SQSClient
+
+if TYPE_CHECKING:
+    from types_aiobotocore_sqs.client import SQSClient
 
 from taskqueue_toolkit.queue.aws_session import aws_session_kwargs
 from taskqueue_toolkit.queue.dsn import SqsDsn
@@ -18,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 _LONG_POLL_WAIT_SECONDS = 10
 
-ClientFactory = Callable[[SqsDsn], AbstractAsyncContextManager[SQSClient]]
+ClientFactory = Callable[[SqsDsn], AbstractAsyncContextManager["SQSClient"]]
 
 
 def _default_client_factory(dsn: SqsDsn) -> AbstractAsyncContextManager[SQSClient]:

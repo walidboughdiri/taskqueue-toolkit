@@ -7,6 +7,12 @@ T = TypeVar("T")
 T_co = TypeVar("T_co", covariant=True)
 
 Encoder = Callable[[T], bytes]
+# SECURITY: Decoder runs on bytes received from a broker — a source outside
+# this process's control in most deployments. Using an unsafe deserializer
+# here (pickle.loads, yaml.load without SafeLoader, eval, ...) turns
+# whoever can publish to your queue/topic into someone who can run
+# arbitrary code in your consumer. Prefer a safe format (json, msgpack,
+# protobuf) unless every publisher is fully trusted.
 Decoder = Callable[[bytes], T]
 
 

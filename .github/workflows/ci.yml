@@ -28,6 +28,20 @@ jobs:
       - run: uv sync --all-extras
       - run: uv run mypy .
 
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - run: uv sync --all-extras
+      # Scans src/ only — tests/ intentionally hardcodes placeholder
+      # credentials (e.g. secret_access_key="test") to talk to fakes/
+      # emulators, which would otherwise false-positive as real secrets.
+      - run: uvx bandit -r src/
+      - run: uvx pip-audit --path .venv
+
   test:
     runs-on: ubuntu-latest
     services:
@@ -56,7 +70,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test]
+    needs: [lint, typecheck, security, test]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3

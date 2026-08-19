@@ -117,6 +117,12 @@ Each adapter constructor takes an injectable client/connection factory for exact
 
 Create one broker instance per test — each owns its own isolated in-memory state, so there's nothing to reset between tests and no risk of one test's queue leaking into another's.
 
+## Security
+
+`Decoder[T]` runs on bytes received from a broker — in most deployments, a source outside this process's control. Using an unsafe deserializer (`pickle.loads`, `yaml.load` without `SafeLoader`, `eval`, ...) as your `decode` callback means whoever can publish to your queue/topic can run arbitrary code in your consumer. Use a safe format (JSON, msgpack, protobuf, ...) unless every publisher is fully trusted.
+
+This package's own code is checked on every push/PR and before every release via [bandit](https://bandit.readthedocs.io/) (unsafe code patterns) and [pip-audit](https://github.com/pypa/pip-audit) (known CVEs in resolved dependencies), alongside ruff, mypy, and the test suite. Found a vulnerability? Please open an issue.
+
 ## Development
 
 ```bash
@@ -125,4 +131,6 @@ uv run pytest
 uv run ruff check .
 uv run ruff format .
 uv run mypy .
+uvx bandit -r src/
+uvx pip-audit --path .venv
 ```

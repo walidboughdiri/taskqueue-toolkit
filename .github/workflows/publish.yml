@@ -17,6 +17,8 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy .
+      - run: uvx bandit -r src/
+      - run: uvx pip-audit --path .venv
       - run: uv build
       - run: uvx twine check dist/*
       - uses: actions/upload-artifact@v4

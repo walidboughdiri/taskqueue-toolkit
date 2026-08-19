@@ -6,10 +6,13 @@ import logging
 from collections.abc import AsyncIterator, Callable
 from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 import aioboto3
-from types_aiobotocore_sns.client import SNSClient
-from types_aiobotocore_sqs.client import SQSClient
+
+if TYPE_CHECKING:
+    from types_aiobotocore_sns.client import SNSClient
+    from types_aiobotocore_sqs.client import SQSClient
 
 from taskqueue_toolkit.queue.aws_session import aws_session_kwargs
 from taskqueue_toolkit.queue.dsn import SnsDsn
@@ -20,7 +23,7 @@ logger = logging.getLogger(__name__)
 _LONG_POLL_WAIT_SECONDS = 10
 _SUBSCRIBER_QUEUE_SUFFIX = "-subscriber"
 
-ClientFactory = Callable[[SnsDsn], AbstractAsyncContextManager[tuple[SNSClient, SQSClient]]]
+ClientFactory = Callable[[SnsDsn], AbstractAsyncContextManager["tuple[SNSClient, SQSClient]"]]
 
 
 @asynccontextmanager
