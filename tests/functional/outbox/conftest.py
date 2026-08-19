@@ -10,6 +10,7 @@ skips (not fakes) when Postgres isn't reachable.
 
 from __future__ import annotations
 
+import os
 from collections.abc import AsyncIterator
 
 import pytest
@@ -19,7 +20,12 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from taskqueue_toolkit.outbox.orm import Base
 
-_POSTGRES_DSN = "postgresql+asyncpg://symfony:secret@localhost:5432/taskqueue_toolkit_test"
+# Override via TASKQUEUE_TOOLKIT_TEST_POSTGRES_DSN — the default targets a
+# local dev Postgres; CI sets its own via a service container.
+_POSTGRES_DSN = os.environ.get(
+    "TASKQUEUE_TOOLKIT_TEST_POSTGRES_DSN",
+    "postgresql+asyncpg://symfony:secret@localhost:5432/taskqueue_toolkit_test",
+)
 
 
 @pytest_asyncio.fixture

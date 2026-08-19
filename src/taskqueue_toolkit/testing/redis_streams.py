@@ -78,7 +78,7 @@ class _FakeRedisClient:
         count: int | None = None,
         block: int | None = None,
     ) -> list[tuple[bytes, list[tuple[bytes, dict[bytes, bytes]]]]]:
-        (name, read_id), = streams.items()
+        ((name, read_id),) = streams.items()
         stream = self._broker._stream_for(name.encode())
         group_key = group.encode()
         grp = stream.groups[group_key]

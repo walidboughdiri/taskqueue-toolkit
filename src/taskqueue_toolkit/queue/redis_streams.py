@@ -63,9 +63,7 @@ class RedisStreamsTaskQueue[T]:
 
     async def _ensure_group(self, client: redis.Redis) -> None:
         try:
-            await client.xgroup_create(
-                self.dsn.stream_name, self.dsn.group, id="0", mkstream=True
-            )
+            await client.xgroup_create(self.dsn.stream_name, self.dsn.group, id="0", mkstream=True)
         except ResponseError as exc:
             if "BUSYGROUP" not in str(exc):
                 raise

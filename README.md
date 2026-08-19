@@ -52,8 +52,10 @@ The five schemes above are built in and checked for exhaustiveness at type-check
 ```python
 from taskqueue_toolkit.queue.registry import register_scheme
 
+
 def build_kafka_queue(dsn, encode, decode):
     return MyKafkaTaskQueue(dsn=dsn, encode=encode, decode=decode)
+
 
 register_scheme("kafka", build_kafka_queue)
 
@@ -121,5 +123,6 @@ Create one broker instance per test — each owns its own isolated in-memory sta
 uv sync --all-extras
 uv run pytest
 uv run ruff check .
+uv run ruff format .
 uv run mypy .
 ```
