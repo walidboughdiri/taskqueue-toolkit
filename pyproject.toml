@@ -1,0 +1,84 @@
+[project]
+name = "taskqueue-toolkit"
+version = "0.1.0"
+description = "Broker-agnostic async task queue (RabbitMQ, SQS, SNS, Redis Streams, Pub/Sub) with a Postgres outbox pattern"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Walid Boughdiri", email = "walid.boughdiri@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Distributed Computing",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+rabbitmq = ["aio-pika>=9.4.0"]
+redis-streams = ["redis>=5.0.0"]
+aws = ["aioboto3>=13.0.0"]
+pubsub = ["google-cloud-pubsub>=2.21.0"]
+outbox = ["sqlalchemy[asyncio]>=2.0.36"]
+all = [
+    "aio-pika>=9.4.0",
+    "redis>=5.0.0",
+    "aioboto3>=13.0.0",
+    "google-cloud-pubsub>=2.21.0",
+    "sqlalchemy[asyncio]>=2.0.36",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+    "aiosqlite>=0.20.0",
+    "asyncpg>=0.30.0",
+    "types-aiobotocore[sqs,sns]>=2.0.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.2,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "taskqueue_toolkit"
+module-root = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+# aioboto3 ships no py.typed marker and there's no separate types-aioboto3
+# package (unlike aiobotocore, covered by types-aiobotocore above).
+module = "aioboto3"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# google-cloud-pubsub ships no py.typed marker and there's no separate
+# types-google-cloud-pubsub package.
+module = ["google.cloud", "google.cloud.pubsub_v1", "google.api_core.exceptions"]
+ignore_missing_imports = true
